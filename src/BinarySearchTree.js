@@ -1,3 +1,6 @@
+//Import the Queue for the breadth-first search
+const Queue = require("./Queue");
+
 //BinarySearchTrees-BST has the following characteristics: each node in a BST hold a key, a value, a left pointer, a right pointer, which points to child nodes.
 //Each node has a parent unless it's the root node.
 
@@ -164,8 +167,54 @@ class BinarySearchTree {
 		//finally, process the current node
 		values.push(this.value);
 	}
-}
 
+	bfs(tree, values = []) {
+		const queue = new Queue();
+		/* start the traversal at the tree and add the tree node to the queue to kick off the BFS */
+		queue.enqueue(tree);
+		//remove from queue
+		let node = queue.dequeue();
+		while (node) {
+			//add the value of the queue to an array
+			values.push(node.value);
+			//add the left child to the queue
+			if (node.left) {
+				queue.enqueue(node.left);
+			}
+			//add the right child to the queue
+			if (node.right) {
+				queue.enqueue(node.right);
+			}
+			node = queue.dequeue();
+		}
+		return values;
+	}
+
+	//GET the HEIGHT of a Binary Search Tree
+	getHeight(currentHeight = 0) {
+		//BASE CASE:
+		//If the current node does not have a left or right child,
+		//then the base case is reached, and the function can return the height
+		if (!this.left && !this.right) return currentHeight;
+
+		//RECURSIVE CASE:
+		//otherwise, compute the new height
+		const newHeight = currentHeight + 1;
+
+		//If there's no left child, recurse down the right subtree only,
+		//passing down the height of the current node.
+		if (!this.left) return this.right.getHeight(newHeight);
+
+		//If there's no right child recurse down the left subtree only,
+		//passing down the height of the current node.
+		if (!this.right) return this.left.getHeight(newHeight);
+
+		// If both children exist, recurse down both subtrees,
+		//passing down the height of the current node.
+		const leftHeight = this.left.getHeight(newHeight);
+		const rightHeight = this.right.getHeight(newHeight);
+	}
+}
 /* COMPLEXITY ANALYSIS FOR INSERT()
 With insertion you iterate to the height of the tree. 
 Best case: You would be inserting the root only, O(1); 
